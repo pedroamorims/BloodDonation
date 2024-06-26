@@ -1,0 +1,143 @@
+﻿@page "/Cadastro"
+@using System.ComponentModel.DataAnnotations
+
+@layout MainLayout
+
+
+<MudPaper Class="mud-width-full pa-4 mt-n16 rounded-t-xl" Elevation="5" Style="background-color:white">
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12" sw="12" wd="8" lg="6">
+            <MudPaper Class="mud-width-full" Elevation="0" Style="background-color:transparent">
+                <div class="d-flex justify-center pb-8 pt-8">
+                <img 
+                    src="imgs/logo.png" 
+                    alt="BloodCare"
+                    width="150"
+                    />
+                </div>
+                <div class="d-flex justify-center">
+                    <h1>Seja um Doador</h1>
+                </div>
+             
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid Spacing="1" Justify="Justify.Center">
+        <MudItem xs="6">
+            <MudPaper Class="mud-width-full pa-8" Elevation="0" Style="background-color:transparent">
+                <h3>Dados Pessoais</h3>
+                <MudForm @ref="_mudFormDadosPessoais">
+                    <MudTextField Class="mb-8"
+                                  T="string"
+                                  Label="Nome Completo"
+                                  Required="true"
+                                  RequiredError="Campo Obrigatório" />
+
+                    <MudTextField Class="mb-8"
+                                  T="DateTime?"
+                                  Format="yyyy-MM-dd"
+                                  Label="Data de Nascimento"
+                                  InputType="InputType.Date"
+                                  Required="true"
+                                  RequiredError="Campo Obrigatório" />
+
+                    <MudRadioGroup @bind-Value="@GeneroOption" Class="mb-8">
+                        <MudRadio Value="@("Masculino")" Size="Size.Small">Masculino</MudRadio>
+                        <MudRadio Value="@("Feminino")" Size="Size.Small">Feminino</MudRadio>
+                    </MudRadioGroup>
+                </MudForm>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6">
+            <MudPaper Class="mud-width-full pa-8" Elevation="0" Style="background-color:transparent">
+                <MudForm @ref="_mudFormDadosSanguineos">
+                    <h3>Dados de Doação</h3>
+                    <MudSelect T="string" Label="Tipo Sanguíneo" Class="mb-8" Variant="Variant.Text">
+                        <MudSelectItem T="string" Value=@("A") />
+                        <MudSelectItem T="string" Value=@("B") />
+                        <MudSelectItem T="string" Value=@("AB") />
+                        <MudSelectItem T="string" Value=@("O") />
+                    </MudSelect>
+                    <MudRadioGroup @bind-Value="@RhFactorOption" Class="mb-8">
+                        <MudRadio Value="@("Positivo")" Size="Size.Small">Positivo</MudRadio>
+                        <MudRadio Value="@("Negativo")" Size="Size.Small">Negativo</MudRadio>
+                    </MudRadioGroup>
+
+                    <MudTextField Class="mb-8"
+                                  T="DateTime?"
+                                  Format="yyyy-MM-dd"
+                                  Label="Última Doação Realizada"
+                                  InputType="InputType.Date" />
+
+                </MudForm>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudPaper Class="mud-width-full pl-8 pr-8" Elevation="0" Style="background-color:whitesmoke">
+        <MudGrid>
+            <MudItem xs="12" sw="12" wd="8" lg="6">
+                <MudPaper Class="mud-width-full pl-8" Elevation="0" Style="background-color:transparent">
+                    <h3>Dados para Login</h3>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+        <MudGrid Spacing="1" Justify="Justify.Center">
+            <MudItem xs="6">
+                <MudPaper Class="mud-width-full pl-8 pr-8" Elevation="0" Style="background-color:transparent">
+                    <MudForm @ref="_mudFormDadosLogin">
+                        <MudTextField Class="mb-8"
+                                      T="string"
+                                      Label="Email"
+                                      Required="true"
+                                      RequiredError="Campo Obrigatório"
+                                      Validation="@(new EmailAddressAttribute{ErrorMessage = "Email Inválido"})" />
+                    </MudForm>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="6">
+                <MudPaper Class="mud-width-full pl-8 pr-8" Elevation="0" Style="background-color:transparent">
+                    <MudForm @ref="_mudFormDadosSanguineos">
+                        <MudTextField Class="mb-8"
+                                      T="string"
+                                      Label="Senha"
+                                      InputType="InputType.Password"
+                                      Required="true"
+                                      RequiredError="Campo Obrigatório" />
+
+                        <MudTextField Class="mb-8"
+                                      T="string"
+                                      Label="Confirme sua Senha"
+                                      InputType="InputType.Password"
+                                      Required="true"
+                                      RequiredError="Campo Obrigatório" />
+
+                    </MudForm>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <div class="d-flex flex-row-reverse mt-8">
+        <MudButton Variant="Variant.Filled" Color="Color.Error">Cadastrar</MudButton>
+    </div>
+</MudPaper>
+
+
+
+
+
+
+
+
+@code {
+    MudForm? _mudFormDadosPessoais;
+    MudForm? _mudFormDadosSanguineos;
+    MudForm? _mudFormDadosLogin;
+
+    public string RhFactorOption { get; set; }
+
+    public string GeneroOption { get; set; }
+
+}
