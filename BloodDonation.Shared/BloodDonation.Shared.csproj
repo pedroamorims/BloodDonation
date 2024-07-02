@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BloodDonation.Core\BloodDonation.Core.csproj" />
-    <ProjectReference Include="..\BloodDonation.Shared\BloodDonation.Shared.csproj" />
   </ItemGroup>
 
 </Project>

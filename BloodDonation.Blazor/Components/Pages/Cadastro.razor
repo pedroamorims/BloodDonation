@@ -1,7 +1,12 @@
 ﻿@page "/Cadastro"
 @using System.ComponentModel.DataAnnotations
+@using BloodDonation.Blazor.Services
+@using BloodDonation.Core.Enums
+@using BloodDonation.Shared.Forms
+@inject CadastroService _cadastroService
+@inject ISnackbar Snackbar
 
-@layout MainLayout
+@layout WithoutNavLayout
 
 
 <MudPaper Class="mud-width-full pa-4 mt-n16 rounded-t-xl" Elevation="5" Style="background-color:white">
@@ -9,16 +14,14 @@
         <MudItem xs="12" sw="12" wd="8" lg="6">
             <MudPaper Class="mud-width-full" Elevation="0" Style="background-color:transparent">
                 <div class="d-flex justify-center pb-8 pt-8">
-                <img 
-                    src="imgs/logo.png" 
-                    alt="BloodCare"
-                    width="150"
-                    />
+                    <img src="imgs/logo.png"
+                         alt="BloodCare"
+                         width="150" />
                 </div>
                 <div class="d-flex justify-center">
                     <h1>Seja um Doador</h1>
                 </div>
-             
+
             </MudPaper>
         </MudItem>
     </MudGrid>
@@ -32,19 +35,14 @@
                                   T="string"
                                   Label="Nome Completo"
                                   Required="true"
-                                  RequiredError="Campo Obrigatório" />
+                                  RequiredError="Campo Obrigatório"
+                                  @bind-Value="formData.FullName" />
 
-                    <MudTextField Class="mb-8"
-                                  T="DateTime?"
-                                  Format="yyyy-MM-dd"
-                                  Label="Data de Nascimento"
-                                  InputType="InputType.Date"
-                                  Required="true"
-                                  RequiredError="Campo Obrigatório" />
+                    <MudDatePicker Label="Data de Nascimento" Mask="@(new DateMask("dd/MM/yyyy"))" Class="mb-8" Editable="true" @bind-Date="formData.BirthDate" Placeholder="Data de Nascimento" />
 
-                    <MudRadioGroup @bind-Value="@GeneroOption" Class="mb-8">
-                        <MudRadio Value="@("Masculino")" Size="Size.Small">Masculino</MudRadio>
-                        <MudRadio Value="@("Feminino")" Size="Size.Small">Feminino</MudRadio>
+                    <MudRadioGroup @bind-Value="@formData.Gender" Class="mb-8">
+                        <MudRadio Value="GenderEnum.Male" Size="Size.Small">Masculino</MudRadio>
+                        <MudRadio Value="GenderEnum.Female" Size="Size.Small">Feminino</MudRadio>
                     </MudRadioGroup>
                 </MudForm>
             </MudPaper>
@@ -53,22 +51,20 @@
             <MudPaper Class="mud-width-full pa-8" Elevation="0" Style="background-color:transparent">
                 <MudForm @ref="_mudFormDadosSanguineos">
                     <h3>Dados de Doação</h3>
-                    <MudSelect T="string" Label="Tipo Sanguíneo" Class="mb-8" Variant="Variant.Text">
-                        <MudSelectItem T="string" Value=@("A") />
-                        <MudSelectItem T="string" Value=@("B") />
-                        <MudSelectItem T="string" Value=@("AB") />
-                        <MudSelectItem T="string" Value=@("O") />
+                    <MudSelect T="BloodTypeEnum" Label="Tipo Sanguíneo" @bind-Value="@formData.BloodType" Class="mb-8" Variant="Variant.Text">
+                        @foreach (var bloodType in Enum.GetValues(typeof(BloodTypeEnum)).Cast<BloodTypeEnum>())
+                        {
+                            <MudSelectItem T="BloodTypeEnum" Value="@(bloodType)">
+                                @(bloodType.ToString())
+                            </MudSelectItem>
+                        }
                     </MudSelect>
-                    <MudRadioGroup @bind-Value="@RhFactorOption" Class="mb-8">
-                        <MudRadio Value="@("Positivo")" Size="Size.Small">Positivo</MudRadio>
-                        <MudRadio Value="@("Negativo")" Size="Size.Small">Negativo</MudRadio>
+                    <MudRadioGroup @bind-Value="@formData.RHFactor" Class="mb-8">
+                        <MudRadio Value="@(RHFactorEnum.Positive)" Size="Size.Small">Positivo</MudRadio>
+                        <MudRadio Value="@(RHFactorEnum.Negative)" Size="Size.Small">Negativo</MudRadio>
                     </MudRadioGroup>
 
-                    <MudTextField Class="mb-8"
-                                  T="DateTime?"
-                                  Format="yyyy-MM-dd"
-                                  Label="Última Doação Realizada"
-                                  InputType="InputType.Date" />
+                    <MudDatePicker Label="Ultima Doação Realizada" Class="mb-8" Editable="true" @bind-Date="formData.LastDonationDate" Mask="@(new DateMask("dd/MM/yyyy"))" Placeholder="Ultima Doação Realizada" />
 
                 </MudForm>
             </MudPaper>
@@ -92,6 +88,7 @@
                                       Label="Email"
                                       Required="true"
                                       RequiredError="Campo Obrigatório"
+                                      @bind-Value="formData.Email"
                                       Validation="@(new EmailAddressAttribute{ErrorMessage = "Email Inválido"})" />
                     </MudForm>
                 </MudPaper>
@@ -104,7 +101,8 @@
                                       Label="Senha"
                                       InputType="InputType.Password"
                                       Required="true"
-                                      RequiredError="Campo Obrigatório" />
+                                      RequiredError="Campo Obrigatório"
+                                      @bind-Value="formData.Password" />
 
                         <MudTextField Class="mb-8"
                                       T="string"
@@ -120,7 +118,7 @@
     </MudPaper>
 
     <div class="d-flex flex-row-reverse mt-8">
-        <MudButton Variant="Variant.Filled" Color="Color.Error">Cadastrar</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SubmitForm">Cadastrar</MudButton>
     </div>
 </MudPaper>
 
@@ -136,8 +134,32 @@
     MudForm? _mudFormDadosSanguineos;
     MudForm? _mudFormDadosLogin;
 
-    public string RhFactorOption { get; set; }
+    private CreateUserForm formData = new();    
 
-    public string GeneroOption { get; set; }
+    private async Task SubmitForm()
+    {
+        var isValid = _mudFormDadosPessoais!.IsValid &&
+                      _mudFormDadosSanguineos!.IsValid &&
+                      _mudFormDadosLogin!.IsValid;
+
+        if (isValid)
+        {
+            try
+            {
+                formData.Role = "admin";
+                var retorno = await _cadastroService.Cadastrar(formData);
+                Snackbar.Add(retorno, Severity.Success);
+                // Adicione qualquer lógica adicional após o envio bem-sucedido
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Erro ao cadastrar: {ex.Message}", Severity.Error);
+            }
+        }
+        else
+        {
+            Snackbar.Add("Por favor, preencha todos os campos obrigatórios corretamente.", Severity.Warning);
+        }
+    }
 
 }

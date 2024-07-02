@@ -23,7 +23,7 @@ namespace BloodDonation.Tests.User
                 new DateTime(1994, 6, 29),
                 new DateTime(2020, 6, 29),
                 BloodTypeEnum.B,
-                RHFactorEnum.Postive,
+                RHFactorEnum.Positive,
                 GenderEnum.Male,
                 null
             );

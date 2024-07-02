@@ -7,6 +7,7 @@ using BloodDonation.Infraestructure.Services;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -50,7 +51,17 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-//builder.Services.AddValidatorsFromAssemblyContaining<CreateBookCommandValidator>();
+//builder.Services.AddValidatorsFromAssemblyContaining<CreateBookCommandValidator
+//
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder
+            .WithOrigins("https://localhost:7027") // Substitua pela URL da sua aplicação Blazor
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
+});
 
 builder.Services.AddFluentValidationAutoValidation();
 
@@ -59,7 +70,7 @@ builder.Services.AddDbContext<BloodDonationDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("BloodDonation"))
     );
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateUserCommand).Assembly));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateUserCommand).Assembly, typeof(CreateUserCommandHandler).Assembly));
 
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -101,5 +112,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowSpecificOrigin");
 
 app.Run();

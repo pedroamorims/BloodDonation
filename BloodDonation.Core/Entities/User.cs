@@ -9,13 +9,13 @@ namespace BloodDonation.Core.Entities
 {
     public class User : BaseEntity
     {
-        public User(string fullName, string email, string password, string role, BloodTypeEnum bloddType, RHFactorEnum rHFactor, GenderEnum gender, DateTime birthDate, DateTime lastDonationDate)
+        public User(string fullName, string email, string password, string role, BloodTypeEnum bloodType, RHFactorEnum rHFactor, GenderEnum gender, DateTime? birthDate, DateTime? lastDonationDate)
         {
             FullName = fullName;
             Email = email;
             Password = password;
             Role = role;
-            BloddType = bloddType;
+            BloodType = bloodType;
             RHFactor = rHFactor;
             Gender = gender;
             BirthDate = birthDate;
@@ -27,9 +27,9 @@ namespace BloodDonation.Core.Entities
         public string Email { get; private set; }
         public string Password { get; private set; }
         public string Role { get; private set; }
-        public DateTime BirthDate { get; private set; }
-        public DateTime LastDonationDate { get; private set; }
-        public BloodTypeEnum BloddType { get; private set; }
+        public DateTime? BirthDate { get; private set; }
+        public DateTime? LastDonationDate { get; private set; }
+        public BloodTypeEnum BloodType { get; private set; }
         public RHFactorEnum RHFactor { get; private set; }
         public GenderEnum Gender { get; private set; }
         public List<Address> Address { get; private set; }

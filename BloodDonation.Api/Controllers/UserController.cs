@@ -1,4 +1,5 @@
 ﻿using BloodDonation.Application.Commands.CreateUser;
+using BloodDonation.Shared.Forms;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,11 @@ namespace BloodDonation.Api.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Post([FromBody] CreateUserCommand command)
+        public async Task<IActionResult> Post([FromBody] CreateUserForm form)
         {
-            var response = await _mediator.Send(command);
+            CreateUserCommand createUserCommand = new(form);
+
+            var response = await _mediator.Send(createUserCommand);
 
             if (!response.IsSuccess)
             {

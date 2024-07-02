@@ -1,17 +1,34 @@
 ﻿using BloodDonation.Application.Commands.CreateAddress;
+using BloodDonation.Core.Entities;
 using BloodDonation.Core.Enums;
+using BloodDonation.Shared.Forms;
 using MediatR;
+using System.Data;
+using System.Reflection;
 
 namespace BloodDonation.Application.Commands.CreateUser
 {
     public class CreateUserCommand : IRequest<BaseResponse<int>>
     {
+        public CreateUserCommand(CreateUserForm form)
+        {
+            FullName = form.FullName;
+            Email = form.Email;
+            Password = form.Password;
+            Role = form.Role;
+            BirthDate = form.BirthDate;
+            LastDonationDate = form.LastDonationDate;
+            BloddType = form.BloodType;
+            RHFactor = form.RHFactor;
+            Gender = form.Gender;
+
+        }
         public CreateUserCommand(string fullName, 
             string email, 
             string password, 
             string role, 
-            DateTime birthDate, 
-            DateTime lastDonationDate, 
+            DateTime? birthDate, 
+            DateTime? lastDonationDate, 
             BloodTypeEnum bloddType, 
             RHFactorEnum rHFactor, 
             GenderEnum gender, 
@@ -30,16 +47,16 @@ namespace BloodDonation.Application.Commands.CreateUser
             Address = address;
         }
 
-        public string FullName { get; private set; }
-        public string Email { get; private set; }
-        public string Password { get; private set; }
-        public string Role { get; private set; }
-        public DateTime BirthDate { get; private set; }
-        public DateTime LastDonationDate { get; private set; }
-        public BloodTypeEnum BloddType { get; private set; }
-        public RHFactorEnum RHFactor { get; private set; }
-        public GenderEnum Gender { get; private set; }
-        public CreateAddressCommand? Address { get; private set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Role { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public DateTime? LastDonationDate { get; set; }
+        public BloodTypeEnum BloddType { get; set; }
+        public RHFactorEnum RHFactor { get; set; }
+        public GenderEnum Gender { get; set; }
+        public CreateAddressCommand? Address { get; set; }
 
     }
 }

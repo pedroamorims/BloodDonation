@@ -8,7 +8,7 @@ namespace BloodDonation.Core.Enums
 {
     public enum RHFactorEnum
     {
-        Postive = 0,
+        Positive = 0,
         Negative =1
     }
 }
