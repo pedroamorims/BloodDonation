@@ -26,7 +26,7 @@ namespace BloodDonation.Infraestructure.Persistence.Repositories
             => _dbContext.Users.ToListAsync();
 
         public async Task<User?> GetByEmailandPasswordAsync(string email, string passwordHash)
-         => await _dbContext.Users.SingleOrDefaultAsync(u => u.Email == email && u.Password == passwordHash);
+         => await _dbContext.Users.SingleOrDefaultAsync(u => u.Email == email);
 
         public Task<User?> GetByIdAsync(int id)
             => _dbContext.Users.SingleOrDefaultAsync(u => u.Id == id);

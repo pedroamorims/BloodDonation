@@ -9,7 +9,7 @@ namespace BloodDonation.Core.Entities
 {
     public class Address : BaseEntity
     {
-        public Address(string street, string city, string state, string postalCode, string country, int userId, bool actualAddress)
+        public Address(string street, string city, string state, string postalCode, string country, long userId, bool actualAddress)
         {
             Street = street;
             City = city;
@@ -25,7 +25,7 @@ namespace BloodDonation.Core.Entities
         public string State { get; private set; }
         public string PostalCode { get; private set; }
         public string Country { get; private set; }
-        public int UserId { get; private set; }
+        public long UserId { get; private set; }
         public bool ActualAddress { get; private set; }
         public User? User { get; private set; }
 

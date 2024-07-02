@@ -1,19 +1,15 @@
 ﻿using BloodDonation.Core.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace BloodDonation.Core.Entities
 {
-    public class User : BaseEntity
+    public class User : IdentityUser<long>
     {
-        public User(string fullName, string email, string password, string role, BloodTypeEnum bloodType, RHFactorEnum rHFactor, GenderEnum gender, DateTime? birthDate, DateTime? lastDonationDate)
+        public User() { }   
+
+        public User(string fullName, string email, string role, BloodTypeEnum bloodType, RHFactorEnum rHFactor, GenderEnum gender, DateTime? birthDate, DateTime? lastDonationDate)
         {
             FullName = fullName;
-            Email = email;
-            Password = password;
             Role = role;
             BloodType = bloodType;
             RHFactor = rHFactor;
@@ -21,11 +17,10 @@ namespace BloodDonation.Core.Entities
             BirthDate = birthDate;
             LastDonationDate = lastDonationDate;
             Address = new();
+            Email = email;
         }
 
         public string FullName { get; private set; }
-        public string Email { get; private set; }
-        public string Password { get; private set; }
         public string Role { get; private set; }
         public DateTime? BirthDate { get; private set; }
         public DateTime? LastDonationDate { get; private set; }
@@ -33,10 +28,7 @@ namespace BloodDonation.Core.Entities
         public RHFactorEnum RHFactor { get; private set; }
         public GenderEnum Gender { get; private set; }
         public List<Address> Address { get; private set; }
-
-
-
-
+        public List<IdentityRole<long>>? Roles { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
 using BloodDonation.Application.Commands.CreateUser;
+using BloodDonation.Core.Entities;
 using BloodDonation.Core.Repositories;
 using BloodDonation.Core.Services;
 using BloodDonation.Infraestructure;
@@ -6,8 +7,8 @@ using BloodDonation.Infraestructure.Persistence.Repositories;
 using BloodDonation.Infraestructure.Services;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -51,6 +52,12 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services
+    .AddAuthentication(IdentityConstants.ApplicationScheme)
+    .AddIdentityCookies();
+
+builder.Services.AddAuthorization();
+
 //builder.Services.AddValidatorsFromAssemblyContaining<CreateBookCommandValidator
 //
 builder.Services.AddCors(options =>
@@ -69,6 +76,13 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddDbContext<BloodDonationDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("BloodDonation"))
     );
+
+builder.Services.AddIdentityCore<User>()
+    .AddRoles<IdentityRole<long>>()
+    .AddEntityFrameworkStores<BloodDonationDbContext>()
+    .AddApiEndpoints();
+
+builder.Services.AddControllers();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateUserCommand).Assembly, typeof(CreateUserCommandHandler).Assembly));
 
@@ -112,6 +126,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGroup("v1/identity")
+    .WithTags("Identity")
+    .MapIdentityApi<User>();
+
 
 app.UseCors("AllowSpecificOrigin");
 

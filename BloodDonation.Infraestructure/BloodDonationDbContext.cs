@@ -1,28 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BloodDonation.Core.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using BloodDonation.Core.Entities;
+using System.Reflection;
 
 namespace BloodDonation.Infraestructure
 {
-    public class BloodDonationDbContext : DbContext
+    public class BloodDonationDbContext(DbContextOptions<BloodDonationDbContext> options)
+    : IdentityDbContext<
+        User,
+        IdentityRole<long>,
+        long,
+        IdentityUserClaim<long>,
+        IdentityUserRole<long>,
+        IdentityUserLogin<long>,
+        IdentityRoleClaim<long>,
+        IdentityUserToken<long>>(options)
     {
-        public BloodDonationDbContext(DbContextOptions<BloodDonationDbContext> options) : base(options)
-        {
-
-        }
-
         public DbSet<User> Users { get; set; }
-        public DbSet<Address> Loans { get; set; }
+        public DbSet<Address> Address { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly()); 
         }
     }
+
 }

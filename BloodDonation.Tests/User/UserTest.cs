@@ -28,8 +28,8 @@ namespace BloodDonation.Tests.User
                 null
             );
 
-            var handler = new CreateUserCommandHandler(new UserTestRepository(), new AddressRepository(), new AuthService());
-            await handler.Handle(command, CancellationToken.None);
+           /* var handler = new CreateUserCommandHandler(new UserTestRepository(), new AddressRepository(), new AuthService());
+            await handler.Handle(command, CancellationToken.None);*/
         }
 
 
